@@ -1,31 +1,60 @@
-# PRO TRADING BOT STRATEGY FORMULA ENGINE
-class TradeStrategyFormula:
-    def __init__(self, account_balance):
-        self.balance = account_balance
-        self.risk_per_trade = 0.015  # 1.5% Risk per trade
+from ai_memory import AIMemory
 
-    def calculate_position_size(self, entry_price, stop_loss_price):
-        risk_amount = self.balance * self.risk_per_trade
-        price_difference = abs(entry_price - stop_loss_price)
-        if price_difference == 0:
-            return 0.01
-        position_size = risk_amount / price_difference
-        return round(position_size, 4)
+class MasterTradingEngine:
+    def __init__(self, initial_daily_balance):
+        self.daily_balance = initial_daily_balance
+        self.max_survival_days = 30
+        self.ai_memory = AIMemory()
 
-    def evaluate_entry_and_exit(self, order_book, current_position):
+    def calculate_30_day_survival_risk(self, current_balance, entry_price, stop_loss):
+        daily_budget = self.daily_balance / self.max_survival_days
+        trade_risk_allowance = daily_budget * (current_balance / self.daily_balance)
+        
+        price_diff = abs(entry_price - stop_loss)
+        if price_diff == 0:
+            return 0.01, 0.0
+        
+        total_split_lots = (trade_risk_allowance * 0.25) / price_diff
+        return round(total_split_lots, 4), round(trade_risk_allowance, 2)
+
+    def evaluate_market_and_execute(self, order_book, current_pattern):
         bids = order_book['bids']
         asks = order_book['asks']
         
-        # Wall & Imbalance Check
         best_bid = float(bids[0][0])
         best_ask = float(asks[0][0])
         
-        # 0.10 Stop Loss Implementation
-        buy_stop_loss = best_bid - 0.10
-        sell_stop_loss = best_ask + 0.10
+        total_bid_vol = sum([float(qty) for price, qty in bids])
+        total_ask_vol = sum([float(qty) for price, qty in asks])
+        total_vol = total_bid_vol + total_ask_vol
         
+        if total_vol == 0:
+            return {"action": "HOLD", "reason": "No Volume Data"}
+            
+        bid_ratio = (total_bid_vol / total_vol) * 100
+        ask_ratio = (total_ask_vol / total_vol) * 100
+        
+        proposal = self.ai_memory.check_for_approval_proposal(current_pattern)
+        
+        action = "WAIT / NO TRADE"
+        stop_loss = 0.0
+        target = 0.0
+        
+        if bid_ratio >= 60.0 and proposal.get("ready_for_approval", False):
+            action = "EXECUTE 4-5 SPLIT BUY TRADES"
+            stop_loss = round(best_bid - 10.0, 2)
+            target = round(best_bid + (best_ask - best_bid) * 4.0, 2)
+            
+        elif ask_ratio >= 60.0 and proposal.get("ready_for_approval", False):
+            action = "EXECUTE 4-5 SPLIT SELL TRADES"
+            stop_loss = round(best_ask + 10.0, 2)
+            target = round(best_ask - (best_ask - best_bid) * 4.0, 2)
+
         return {
-            "buy_sl": buy_stop_loss,
-            "sell_sl": sell_stop_loss,
-            "status": "Formula Compiled Successfully"
+            "action": action,
+            "bid_ratio": round(bid_ratio, 1),
+            "ask_ratio": round(ask_ratio, 1),
+            "stop_loss": stop_loss,
+            "dynamic_target": target,
+            "ai_status": proposal
         }
