@@ -3,278 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MT5 Pro Trading Terminal</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Pro AI Trading Terminal - MT5 Dark Theme</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #121212; color: #e0e0e0; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar / Navigation */
+        .sidebar { width: 260px; background-color: #1e1e1e; border-right: 1px solid #333; display: flex; flex-direction: column; }
+        .logo-area { padding: 20px; font-size: 18px; font-weight: bold; color: #00ff88; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 10px; }
+        .nav-menu { list-style: none; padding: 20px 0; }
+        .nav-menu li { padding: 12px 20px; cursor: pointer; color: #aaa; transition: 0.2s; }
+        .nav-menu li:hover, .nav-menu li.active { background-color: #2a2a2a; color: #fff; border-left: 4px solid #00ff88; }
+        
+        /* Main Content Area */
+        .main-content { flex: 1; display: flex; flex-direction: column; height: 100vh; }
+        .header { height: 60px; background-color: #1e1e1e; border-bottom: 1px solid #333; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+        .account-info { display: flex; gap: 20px; font-size: 14px; }
+        .account-info span { color: #00ff88; font-weight: bold; }
+        
+        /* Dashboard Grid */
+        .dashboard-grid { flex: 1; display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; gap: 15px; padding: 15px; overflow-y: auto; }
+        
+        .card { background-color: #1a1a1a; border: 1px solid #333; border-radius: 6px; padding: 15px; display: flex; flex-direction: column; }
+        .card-title { font-size: 14px; font-weight: bold; color: #888; margin-bottom: 10px; text-transform: uppercase; }
+        
+        /* Chart & Target Box */
+        .chart-card { grid-column: 1; grid-row: 1 / span 2; }
+        .target-box { background: linear-gradient(135deg, #1e2923, #151a17); border: 1px solid #2e7d32; }
+        .target-value { font-size: 28px; font-weight: bold; color: #00ff88; margin-top: 5px; }
+        
+        /* AI Chat Terminal */
+        .chat-card { grid-column: 2; grid-row: 1 / span 2; display: flex; flex-direction: column; }
+        .chat-messages { flex: 1; background-color: #141414; border: 1px solid #2a2a2a; border-radius: 4px; padding: 10px; overflow-y: auto; margin-bottom: 10px; font-size: 13px; display: flex; flex-direction: column; gap: 8px; }
+        .message { padding: 8px 12px; border-radius: 4px; max-width: 90%; line-height: 1.4; }
+        .message.ai { background-color: #222; color: #ddd; align-self: flex-start; border-left: 3px solid #00ff88; }
+        .message.user { background-color: #0d3b22; color: #fff; align-self: flex-end; }
+        
+        .chat-input-area { display: flex; gap: 8px; }
+        .chat-input-area input { flex: 1; background-color: #111; border: 1px solid #444; border-radius: 4px; padding: 10px; color: #fff; outline: none; }
+        .chat-input-area input:focus { border-color: #00ff88; }
+        .chat-input-area button { background-color: #00ff88; color: #111; border: none; padding: 0 15px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .chat-input-area button:hover { background-color: #00cc6a; }
+    </style>
 </head>
-<body class="bg-black text-slate-100 font-sans pb-20 select-none">
+<body>
 
-    <!-- Top MT5 Balance & Header Bar -->
-    <header class="bg-black border-b border-zinc-900 p-2.5 flex justify-between items-center sticky top-0 z-50 text-xs">
-        <div class="flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-amber-500 inline-block"></span>
-            <span class="font-bold text-zinc-300">DEMO</span>
-            <span class="font-extrabold text-white text-sm tracking-wide">MT5</span>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo-area">
+            ⚡ MT5 AI Terminal
         </div>
-        <div class="flex gap-3 text-right">
-            <div>
-                <span class="text-[9px] text-zinc-500 block">BAL</span>
-                <span class="font-bold text-white text-xs">10,000.00</span>
-            </div>
-            <div>
-                <span class="text-[9px] text-zinc-500 block">EQ</span>
-                <span class="font-bold text-white text-xs">10,000.00</span>
-            </div>
-            <div>
-                <span class="text-[9px] text-zinc-500 block">P/L</span>
-                <span class="font-bold text-emerald-500 text-xs">0.00</span>
-            </div>
-        </div>
-    </header>
+        <ul class="nav-menu">
+            <li class="active">📊 Live Dashboard</li>
+            <li>🧠 AI Self-Learning & Memory</li>
+            <li>⚙️ Risk & Lot Management</li>
+            <li>📜 Trade Logs</li>
+        </ul>
+    </div>
 
-    <!-- Main Content Container (Tabs) -->
-    <main class="p-0">
+    <!-- Main Content -->
+    <div class="main-content">
+        <header class="header">
+            <div><b>Symbol:</b> BTCUSDT (100ms HFT Stream)</div>
+            <div class="account-info">
+                <div>Balance: <span id="acc-balance">$1,000.00</span></div>
+                <div>Daily Risk: <span style="color: #ff5252;">1.5% (30-Day Safe)</span></div>
+            </div>
+        </header>
 
-        <!-- TAB 1: QUOTES (Market Watch) -->
-        <div id="tab-quotes" class="tab-content divide-y divide-zinc-900">
-            <div class="p-3 bg-black">
-                <input type="text" placeholder="Search symbol..." class="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-200 focus:outline-none focus:border-amber-500">
-            </div>
-            <div onclick="openChart('BTCUSDT')" class="p-3 flex justify-between items-center active:bg-zinc-950 cursor-pointer">
-                <div>
-                    <span class="font-bold text-white text-sm block">BTCUSDT</span>
-                    <span class="text-[10px] text-zinc-500">H 65,409.56 &bull; L 63,943.29</span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="text-right">
-                        <span class="font-bold text-sm text-emerald-500 inline-block mr-2">64,003.99</span>
-                        <span class="font-bold text-sm text-red-500 inline-block">64,004.00</span>
-                    </div>
-                    <span class="text-xs font-semibold text-red-500 w-14 text-right">-0.13%</span>
+        <div class="dashboard-grid">
+            <!-- Chart & Order Book View -->
+            <div class="card chart-card">
+                <div class="card-title">Live Order Book & Wall Depth Analysis</div>
+                <div style="flex: 1; display: flex; align-items: center; justify-content: center; color: #666; border: 1px dashed #333; border-radius: 4px;">
+                    [ Binance Live WebSocket Stream & Chart Area ]
                 </div>
             </div>
-            <div onclick="openChart('ETHUSDT')" class="p-3 flex justify-between items-center active:bg-zinc-950 cursor-pointer">
-                <div>
-                    <span class="font-bold text-white text-sm block">ETHUSDT</span>
-                    <span class="text-[10px] text-zinc-500">H 1,936.99 &bull; L 1,886.58</span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="text-right">
-                        <span class="font-bold text-sm text-emerald-500 inline-block mr-2">1,887.08</span>
-                        <span class="font-bold text-sm text-red-500 inline-block">1,887.09</span>
-                    </div>
-                    <span class="text-xs font-semibold text-red-500 w-14 text-right">-0.98%</span>
-                </div>
+
+            <!-- Expected Target & Signal Box -->
+            <div class="card target-box">
+                <div class="card-title">Expected Sureshot Target</div>
+                <div style="font-size: 13px; color: #aaa;">60:40 Volume Ratio Confirmed</div>
+                <div class="target-value" id="target-display">+$450.00 TP</div>
+                <div style="margin-top: 10px; font-size: 12px; color: #00ff88;">Status: Waiting for 95% AI Pattern Match</div>
             </div>
-            <div onclick="openChart('BNBUSDT')" class="p-3 flex justify-between items-center active:bg-zinc-950 cursor-pointer">
-                <div>
-                    <span class="font-bold text-white text-sm block">BNBUSDT</span>
-                    <span class="text-[10px] text-zinc-500">H 596.0000 &bull; L 574.4100</span>
+
+            <!-- AI Chat & Learning Terminal -->
+            <div class="card chat-card">
+                <div class="card-title">AI Brain & Approval Terminal</div>
+                <div class="chat-messages" id="chat-box">
+                    <div class="message ai"><b>[AI System]:</b> Connected successfully. I am monitoring order books and tracking pattern accuracies. Once a pattern hits 95% accuracy over 20+ tests, I will ask for your approval here.</div>
                 </div>
-                <div class="flex items-center gap-3">
-                    <div class="text-right">
-                        <span class="font-bold text-sm text-emerald-500 inline-block mr-2">591.1500</span>
-                        <span class="font-bold text-sm text-red-500 inline-block">591.1600</span>
-                    </div>
-                    <span class="text-xs font-semibold text-emerald-500 w-14 text-right">+2.71%</span>
+                <div class="chat-input-area">
+                    <input type="text" id="user-input" placeholder="Type rule, command or query to AI...">
+                    <button onclick="sendMessage()">Send</button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- TAB 2: CHART & EXPECTED TARGET BOX -->
-        <div id="tab-chart" class="tab-content hidden p-3">
-            <div class="flex justify-between items-center mb-3">
-                <div class="bg-zinc-900 border border-zinc-800 px-3 py-1 rounded-lg text-xs font-bold text-white" id="chart-symbol-tag">BTCUSDT <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i></div>
-                <div class="text-sm font-extrabold text-white">64,004.00 <span class="text-[10px] text-red-500 block font-normal text-right">-0.13%</span></div>
-            </div>
-            <div class="flex gap-1.5 overflow-x-auto pb-2 mb-2 text-xs">
-                <button class="bg-zinc-900 px-3 py-1 rounded text-zinc-400 font-bold">M1</button>
-                <button class="bg-zinc-900 px-3 py-1 rounded text-zinc-400">M5</button>
-                <button class="bg-amber-500 px-3 py-1 rounded text-black font-bold">M15</button>
-                <button class="bg-zinc-900 px-3 py-1 rounded text-zinc-400">H1</button>
-                <button class="bg-zinc-900 px-3 py-1 rounded text-zinc-400">H4</button>
-                <button class="bg-zinc-900 px-3 py-1 rounded text-zinc-400">D1</button>
-            </div>
-            <div class="bg-black border border-zinc-900 rounded-xl h-[45vh] flex flex-col justify-center items-center relative">
-                <div class="text-zinc-600 text-xs"><i class="fa-solid fa-chart-candlestick text-2xl mb-1 block text-emerald-500"></i>TradingView Candlestick View</div>
-            </div>
-
-            <!-- Expected Target Box (Green/Red dynamic box) -->
-            <div id="target-box" class="mt-2 p-2.5 rounded-xl border bg-emerald-950/40 border-emerald-500/40 flex justify-between items-center">
-                <div>
-                    <span class="text-[9px] uppercase tracking-wider font-bold text-emerald-400 block" id="target-label">Expected Target (BUY Active)</span>
-                    <span class="text-sm font-extrabold text-emerald-300" id="target-value">$64,500.00</span>
-                </div>
-                <div class="text-right">
-                    <span class="text-[9px] text-zinc-400 block">Bot Confidence</span>
-                    <span class="text-xs font-bold text-emerald-400">88%</span>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-2 mt-2">
-                <button class="bg-emerald-500 hover:bg-emerald-600 text-black font-bold p-2.5 rounded-lg text-xs shadow">BUY 64,004.00</button>
-                <button class="bg-red-500 hover:bg-red-600 text-white font-bold p-2.5 rounded-lg text-xs shadow">SELL 64,003.99</button>
-            </div>
-        </div>
-
-        <!-- TAB 3: TRADE (New Order & Execution) -->
-        <div id="tab-trade" class="tab-content hidden p-3">
-            <h3 class="text-xs font-bold text-white mb-3">New Order</h3>
-            <div class="space-y-3 text-xs">
-                <div>
-                    <span class="text-[10px] text-zinc-500 uppercase block mb-1">Symbol</span>
-                    <div class="bg-zinc-900 border border-zinc-800 p-2.5 rounded-lg font-bold text-white flex justify-between items-center">
-                        BTCUSDT <i class="fa-solid fa-chevron-down text-[10px] text-zinc-500"></i>
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div class="bg-zinc-900 border border-zinc-800 p-2.5 rounded-lg">
-                        <span class="text-[9px] text-zinc-500 block">BID (SELL)</span>
-                        <span class="font-bold text-red-500 text-sm">64,005.48</span>
-                    </div>
-                    <div class="bg-zinc-900 border border-zinc-800 p-2.5 rounded-lg">
-                        <span class="text-[9px] text-zinc-500 block">ASK (BUY)</span>
-                        <span class="font-bold text-emerald-500 text-sm">64,005.49</span>
-                    </div>
-                </div>
-                <div class="flex gap-2">
-                    <button class="flex-1 bg-amber-500 text-black font-bold py-2 rounded-lg">MARKET</button>
-                    <button class="flex-1 bg-zinc-900 text-zinc-400 font-bold py-2 rounded-lg border border-zinc-800">LIMIT</button>
-                </div>
-                <div>
-                    <span class="text-[10px] text-zinc-500 uppercase block mb-1">Volume</span>
-                    <div class="flex items-center bg-zinc-900 border border-zinc-800 rounded-lg overflow-hidden">
-                        <button class="px-4 py-2 bg-zinc-800 text-white font-bold">-</button>
-                        <span class="flex-1 text-center font-bold text-white">0.01</span>
-                        <button class="px-4 py-2 bg-zinc-800 text-white font-bold">+</button>
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <span class="text-[10px] text-zinc-500 block mb-1">STOP LOSS</span>
-                        <input type="text" class="w-full bg-zinc-900 border border-zinc-800 p-2 rounded-lg text-center text-white" placeholder="0.00">
-                    </div>
-                    <div>
-                        <span class="text-[10px] text-zinc-500 block mb-1">TAKE PROFIT</span>
-                        <input type="text" class="w-full bg-zinc-900 border border-zinc-800 p-2 rounded-lg text-center text-white" placeholder="0.00">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-2 pt-2">
-                    <button class="bg-emerald-500 text-black font-bold py-3 rounded-lg text-xs">BUY / LONG</button>
-                    <button class="bg-red-500 text-white font-bold py-3 rounded-lg text-xs">SELL / SHORT</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB 4: HISTORY (Open/Closed & Calendar P&L) -->
-        <div id="tab-history" class="tab-content hidden p-3">
-            <div class="flex justify-between items-center mb-3">
-                <h3 class="text-xs font-bold text-white">Positions</h3>
-                <button class="bg-zinc-900 border border-zinc-800 text-[10px] px-3 py-1 rounded-lg text-zinc-300">Reset</button>
-            </div>
-            <div class="grid grid-cols-2 gap-1 bg-zinc-900 p-1 rounded-xl mb-4 border border-zinc-800 text-xs">
-                <button class="bg-amber-500 text-black font-bold py-1.5 rounded-lg">OPEN</button>
-                <button class="text-zinc-400 font-bold py-1.5 rounded-lg">CLOSED</button>
-            </div>
-            <div class="text-center py-16 text-zinc-600 text-xs">No open positions.</div>
-        </div>
-
-        <!-- TAB 5: AI MENTOR -->
-        <div id="tab-ai" class="tab-content hidden p-3">
-            <div class="flex justify-between items-center mb-2 px-1">
-                <div>
-                    <span class="font-bold text-white text-sm block">TradeMind</span>
-                    <span class="text-[10px] text-emerald-500"><i class="fa-solid fa-sparkles"></i> Memory active &bull; 0 rules</span>
-                </div>
-                <div class="flex gap-2">
-                    <button class="bg-zinc-900 border border-zinc-800 px-2.5 py-1.5 rounded-lg text-zinc-300 text-xs"><i class="fa-solid fa-brain"></i></button>
-                    <button class="bg-zinc-900 border border-zinc-800 px-2.5 py-1.5 rounded-lg text-zinc-400 text-xs"><i class="fa-solid fa-trash"></i></button>
-                </div>
-            </div>
-            <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4 h-[58vh] flex flex-col justify-center items-center text-center">
-                <div class="w-12 h-12 bg-amber-500/10 border border-amber-500/30 rounded-full flex items-center justify-center text-amber-500 mb-3 text-lg">
-                    <i class="fa-solid fa-robot"></i>
-                </div>
-                <h4 class="font-bold text-white text-sm mb-1">Hi, I'm TradeMind</h4>
-                <p class="text-[11px] text-zinc-400 mb-4 max-w-xs">Teach me your trading rules and I'll remember them forever.</p>
-                <p class="text-[11px] text-amber-400 bg-amber-500/10 border border-amber-500/20 p-2 rounded-lg">Try: "Remember: buy BTC when RSI drops below 30"</p>
-            </div>
-            <div class="mt-2 flex gap-2">
-                <input type="text" placeholder="Ask TradeMind or teach a rule..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-2.5 text-xs text-zinc-200 focus:outline-none focus:border-amber-500">
-                <button class="bg-amber-500 hover:bg-amber-600 text-black px-4 rounded-xl text-xs font-bold"><i class="fa-solid fa-paper-plane"></i></button>
-            </div>
-        </div>
-
-        <!-- TAB 6: ADMIN CONSOLE -->
-        <div id="tab-admin" class="tab-content hidden p-3">
-            <h3 class="text-xs font-bold text-white mb-3">Admin Console</h3>
-            <div class="bg-zinc-900 border border-zinc-800 p-3 rounded-xl flex justify-between items-center mb-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 bg-zinc-800 rounded-lg flex items-center justify-center text-zinc-300 text-xs"><i class="fa-solid fa-bolt"></i></div>
-                    <div>
-                        <span class="font-bold text-white text-xs block">Algo Engine</span>
-                        <span class="text-[10px] text-zinc-500 block">Paused</span>
-                    </div>
-                </div>
-                <button class="bg-emerald-500 hover:bg-emerald-600 text-black font-extrabold text-xs px-4 py-2 rounded-lg">START</button>
-            </div>
-            <div class="flex justify-between items-center mb-2">
-                <h3 class="text-xs font-bold text-white">Strategies</h3>
-                <button class="bg-amber-500 text-black font-bold text-xs px-3 py-1 rounded-lg">+ New</button>
-            </div>
-            <div class="text-center py-20 text-zinc-600 text-xs">No strategies yet. Tap "New" to create one.</div>
-        </div>
-
-    </main>
-
-    <!-- BOTTOM NAVIGATION BAR -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-black border-t border-zinc-900 flex justify-around py-2 z-50 text-[10px]">
-        <button onclick="switchTab('quotes')" id="nav-quotes" class="nav-btn flex flex-col items-center text-amber-500">
-            <i class="fa-solid fa-list-ul text-base mb-0.5"></i>
-            Quotes
-        </button>
-        <button onclick="switchTab('chart')" id="nav-chart" class="nav-btn flex flex-col items-center text-zinc-500">
-            <i class="fa-solid fa-chart-line text-base mb-0.5"></i>
-            Chart
-        </button>
-        <button onclick="switchTab('trade')" id="nav-trade" class="nav-btn flex flex-col items-center text-zinc-500">
-            <i class="fa-solid fa-arrow-trend-up text-base mb-0.5"></i>
-            Trade
-        </button>
-        <button onclick="switchTab('history')" id="nav-history" class="nav-btn flex flex-col items-center text-zinc-500">
-            <i class="fa-solid fa-clock-rotate-left text-base mb-0.5"></i>
-            History
-        </button>
-        <button onclick="switchTab('ai')" id="nav-ai" class="nav-btn flex flex-col items-center text-zinc-500">
-            <i class="fa-solid fa-robot text-base mb-0.5"></i>
-            AI
-        </button>
-        <button onclick="switchTab('admin')" id="nav-admin" class="nav-btn flex flex-col items-center text-zinc-500">
-            <i class="fa-solid fa-sliders text-base mb-0.5"></i>
-            Admin
-        </button>
-    </nav>
-
-    <!-- Scripting for Navigation -->
     <script>
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.nav-btn').forEach(el => {
-                el.classList.remove('text-amber-500');
-                el.classList.add('text-zinc-500');
-            });
-
-            document.getElementById('tab-' + tabName).classList.remove('hidden');
-            const activeBtn = document.getElementById('nav-' + tabName);
-            activeBtn.classList.remove('text-zinc-500');
-            activeBtn.classList.add('text-amber-500');
-        }
-
-        function openChart(symbol) {
-            switchTab('chart');
-            document.getElementById('chart-symbol-tag').innerHTML = symbol + ' <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i>';
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const chatBox = document.getElementById('chat-box');
+            
+            if(input.value.trim() === "") return;
+            
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.innerHTML = input.value;
+            chatBox.appendChild(userMsg);
+            
+            let query = input.value;
+            input.value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
+            
+            setTimeout(() => {
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'message ai';
+                aiMsg.innerHTML = `<b>[AI Brain]:</b> Analyzing your command: "${query}". Tracking order flow and checking 95% accuracy thresholds.`;
+                chatBox.appendChild(aiMsg);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 800);
         }
     </script>
 </body>
