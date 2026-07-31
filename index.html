@@ -3,218 +3,284 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro Trading Bot Terminal</title>
+    <title>MT5 Pro Trading Terminal</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for Icons -->
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans pb-20">
+<body class="bg-black text-slate-100 font-sans pb-20 select-none">
 
-    <!-- Top Header / Balance Bar (Visible across app or specific tabs) -->
-    <header class="bg-slate-900 border-b border-slate-800 p-3 flex justify-between items-center sticky top-0 z-50">
-        <div>
-            <span class="text-xs text-slate-400 block">Balance (MT5 Style)</span>
-            <span class="text-lg font-bold text-emerald-400">$10,482.50</span>
+    <!-- Top MT5 Balance & Header Bar -->
+    <header class="bg-black border-b border-zinc-800 p-2.5 flex justify-between items-center sticky top-0 z-50 text-xs">
+        <div class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-amber-500 inline-block"></span>
+            <span class="font-bold text-slate-300">DEMO</span>
+            <span class="font-extrabold text-white text-sm tracking-wide">MT5</span>
         </div>
-        <div class="text-right">
-            <span class="text-xs text-slate-400 block">Today P&L</span>
-            <span class="text-sm font-semibold text-emerald-400">+$342.00 (Fee: $4.50)</span>
+        <div class="flex gap-4 text-right">
+            <div>
+                <span class="text-[10px] text-zinc-500 block">BAL</span>
+                <span class="font-bold text-white text-xs">10,000.00</span>
+            </div>
+            <div>
+                <span class="text-[10px] text-zinc-500 block">EQ</span>
+                <span class="font-bold text-white text-xs">10,000.00</span>
+            </div>
+            <div>
+                <span class="text-[10px] text-zinc-500 block">P/L</span>
+                <span class="font-bold text-emerald-500 text-xs">0.00</span>
+            </div>
         </div>
     </header>
 
     <!-- Main Content Container (Tabs) -->
-    <main class="p-3">
+    <main class="p-0">
 
-        <!-- TAB 1: QUOTES (Markets & Favorites) -->
-        <div id="tab-quotes" class="tab-content">
-            <div class="mb-3">
-                <input type="text" placeholder="Search Binance Markets..." class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
-            </div>
+        <!-- TAB 1: QUOTES (MT5 Style Market Watch) -->
+        <div id="tab-quotes" class="tab-content divide-y divide-zinc-900">
             
-            <!-- Favorites Section -->
-            <div class="mb-4">
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">⭐ Favorites</h3>
-                <div class="space-y-2">
-                    <div class="bg-slate-900 border border-slate-800 p-3 rounded-lg flex justify-between items-center cursor-pointer hover:border-slate-700">
-                        <div>
-                            <span class="font-bold block text-sm">BTCUSDT</span>
-                            <span class="text-xs text-slate-400">Binance Perpetual</span>
-                        </div>
-                        <div class="text-right">
-                            <span class="font-bold text-sm block text-emerald-400">$64,250.00</span>
-                            <span class="text-xs text-emerald-400">+2.45%</span>
-                        </div>
+            <!-- Asset Row 1: BTCUSDT -->
+            <div onclick="openChart('BTCUSDT')" class="p-3 flex justify-between items-center active:bg-zinc-900 cursor-pointer">
+                <div>
+                    <span class="font-bold text-white text-sm block">BTCUSDT</span>
+                    <span class="text-[11px] text-zinc-500">H 65,409.56 &bull; L 63,943.29</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <span class="font-bold text-sm text-emerald-500 inline-block mr-2">64,003.99</span>
+                        <span class="font-bold text-sm text-red-500 inline-block">64,004.00</span>
                     </div>
+                    <span class="text-xs font-semibold text-red-500 w-16 text-right">-0.13%</span>
                 </div>
             </div>
 
-            <!-- All Binance Markets Folder -->
-            <div>
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">📁 All Binance Markets</h3>
-                <div class="space-y-2" id="binance-markets-list">
-                    <div class="bg-slate-900/60 border border-slate-800/60 p-3 rounded-lg flex justify-between items-center">
-                        <div><span class="font-bold block text-sm">ETHUSDT</span><span class="text-xs text-slate-400">Binance</span></div>
-                        <div class="text-right"><span class="font-bold text-sm block">$3,450.00</span><span class="text-xs text-red-400">-0.85%</span></div>
+            <!-- Asset Row 2: ETHUSDT -->
+            <div onclick="openChart('ETHUSDT')" class="p-3 flex justify-between items-center active:bg-zinc-900 cursor-pointer">
+                <div>
+                    <span class="font-bold text-white text-sm block">ETHUSDT</span>
+                    <span class="text-[11px] text-zinc-500">H 1,936.99 &bull; L 1,886.58</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <span class="font-bold text-sm text-emerald-500 inline-block mr-2">1,887.08</span>
+                        <span class="font-bold text-sm text-red-500 inline-block">1,887.09</span>
                     </div>
-                    <div class="bg-slate-900/60 border border-slate-800/60 p-3 rounded-lg flex justify-between items-center">
-                        <div><span class="font-bold block text-sm">SOLUSDT</span><span class="text-xs text-slate-400">Binance</span></div>
-                        <div class="text-right"><span class="font-bold text-sm block">$145.20</span><span class="text-xs text-emerald-400">+5.12%</span></div>
-                    </div>
+                    <span class="text-xs font-semibold text-red-500 w-16 text-right">-0.98%</span>
                 </div>
             </div>
+
+            <!-- Asset Row 3: BNBUSDT -->
+            <div onclick="openChart('BNBUSDT')" class="p-3 flex justify-between items-center active:bg-zinc-900 cursor-pointer">
+                <div>
+                    <span class="font-bold text-white text-sm block">BNBUSDT</span>
+                    <span class="text-[11px] text-zinc-500">H 596.0000 &bull; L 574.4100</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <span class="font-bold text-sm text-emerald-500 inline-block mr-2">591.1500</span>
+                        <span class="font-bold text-sm text-red-500 inline-block">591.1600</span>
+                    </div>
+                    <span class="text-xs font-semibold text-emerald-500 w-16 text-right">+2.71%</span>
+                </div>
+            </div>
+
+            <!-- Asset Row 4: ADAUSDT -->
+            <div onclick="openChart('ADAUSDT')" class="p-3 flex justify-between items-center active:bg-zinc-900 cursor-pointer">
+                <div>
+                    <span class="font-bold text-white text-sm block">ADAUSDT</span>
+                    <span class="text-[11px] text-zinc-500">H 0.176300 &bull; L 0.163100</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <span class="font-bold text-sm text-emerald-500 inline-block mr-2">0.168300</span>
+                        <span class="font-bold text-sm text-red-500 inline-block">0.168400</span>
+                    </div>
+                    <span class="text-xs font-semibold text-emerald-500 w-16 text-right">+3.06%</span>
+                </div>
+            </div>
+
+            <!-- Asset Row 5: XRPUSDT -->
+            <div onclick="openChart('XRPUSDT')" class="p-3 flex justify-between items-center active:bg-zinc-900 cursor-pointer">
+                <div>
+                    <span class="font-bold text-white text-sm block">XRPUSDT</span>
+                    <span class="text-[11px] text-zinc-500">H 1.0950 &bull; L 1.0740</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <span class="font-bold text-sm text-emerald-500 inline-block mr-2">1.0750</span>
+                        <span class="font-bold text-sm text-red-500 inline-block">1.0751</span>
+                    </div>
+                    <span class="text-xs font-semibold text-red-500 w-16 text-right">-0.26%</span>
+                </div>
+            </div>
+
+            <!-- Asset Row 6: SOLUSDT -->
+            <div onclick="openChart('SOLUSDT')" class="p-3 flex justify-between items-center active:bg-zinc-900 cursor-pointer">
+                <div>
+                    <span class="font-bold text-white text-sm block">SOLUSDT</span>
+                    <span class="text-[11px] text-zinc-500">H 75.2900 &bull; L 73.3000</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <span class="font-bold text-sm text-emerald-500 inline-block mr-2">73.5900</span>
+                        <span class="font-bold text-sm text-red-500 inline-block">73.6000</span>
+                    </div>
+                    <span class="text-xs font-semibold text-red-500 w-16 text-right">-0.16%</span>
+                </div>
+            </div>
+
         </div>
 
         <!-- TAB 2: LIVE CHART & EXPECTED TARGET BOX -->
-        <div id="tab-chart" class="tab-content hidden">
-            <!-- Timeframes -->
+        <div id="tab-chart" class="tab-content hidden p-3">
             <div class="flex gap-2 overflow-x-auto pb-2 mb-2 text-xs">
-                <button class="bg-slate-800 px-3 py-1 rounded font-bold text-emerald-400">1m</button>
-                <button class="bg-slate-900 px-3 py-1 rounded text-slate-400">5m</button>
-                <button class="bg-slate-900 px-3 py-1 rounded text-slate-400">15m</button>
-                <button class="bg-slate-900 px-3 py-1 rounded text-slate-400">1H</button>
-                <button class="bg-slate-900 px-3 py-1 rounded text-slate-400">4H</button>
-                <button class="bg-slate-900 px-3 py-1 rounded text-slate-400">1D</button>
+                <button class="bg-zinc-800 px-3 py-1 rounded font-bold text-emerald-400">1m</button>
+                <button class="bg-zinc-900 px-3 py-1 rounded text-zinc-400">5m</button>
+                <button class="bg-zinc-900 px-3 py-1 rounded text-zinc-400">15m</button>
+                <button class="bg-zinc-900 px-3 py-1 rounded text-zinc-400">1H</button>
+                <button class="bg-zinc-900 px-3 py-1 rounded text-zinc-400">4H</button>
+                <button class="bg-zinc-900 px-3 py-1 rounded text-zinc-400">1D</button>
             </div>
 
-            <!-- Full Screen Trading View Simulation Box -->
-            <div class="bg-slate-900 border border-slate-800 rounded-xl h-[60vh] flex flex-col justify-center items-center relative">
-                <div class="text-slate-500 text-sm"><i class="fa-solid fa-chart-candlestick text-2xl mb-2 block"></i>Live Chart Integration Area</div>
-                <div class="absolute top-3 left-3 text-xs bg-slate-950/80 px-2 py-1 rounded border border-slate-800">BTCUSDT • Perpetual</div>
+            <div class="bg-zinc-950 border border-zinc-800 rounded-xl h-[55vh] flex flex-col justify-center items-center relative">
+                <div class="text-zinc-500 text-xs text-center"><i class="fa-solid fa-chart-candlestick text-xl mb-2 block text-emerald-500"></i>Interactive Chart Area</div>
+                <div id="chart-symbol-tag" class="absolute top-3 left-3 text-[11px] bg-black/80 px-2 py-0.5 rounded border border-zinc-800 font-bold text-zinc-300">BTCUSDT • Perpetual</div>
             </div>
 
             <!-- Expected Target Box (Green for Buy / Red for Sell) -->
-            <!-- Note: Is class mein 'bg-emerald-500/20 text-emerald-400 border-emerald-500' buy ke liye hai. Sell ke liye 'bg-red-500/20 text-red-400 border-red-500' use hoga. -->
-            <div id="target-box" class="mt-3 p-3 rounded-xl border bg-emerald-500/10 border-emerald-500/30 flex justify-between items-center">
+            <div id="target-box" class="mt-3 p-3 rounded-xl border bg-emerald-950/30 border-emerald-500/40 flex justify-between items-center">
                 <div>
                     <span class="text-[10px] uppercase tracking-wider font-bold text-emerald-400 block" id="target-label">Expected Target (BUY Bot Active)</span>
-                    <span class="text-lg font-extrabold text-emerald-300" id="target-value">$64,800.00</span>
+                    <span class="text-base font-extrabold text-emerald-300" id="target-value">$64,500.00</span>
                 </div>
                 <div class="text-right">
-                    <span class="text-xs text-slate-400 block">Bot Confidence</span>
-                    <span class="text-sm font-bold text-emerald-400">88% (High)</span>
+                    <span class="text-[10px] text-zinc-400 block">Bot Confidence</span>
+                    <span class="text-xs font-bold text-emerald-400">88% (High)</span>
                 </div>
             </div>
         </div>
 
-        <!-- TAB 3: TRADE & HISTORY (MT5 Style) -->
-        <div id="tab-trade" class="tab-content hidden">
-            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">⚡ Active Bot Trades</h3>
-            <div class="space-y-2 mb-6">
-                <div class="bg-slate-900 border border-slate-800 p-3 rounded-lg flex justify-between items-center">
+        <!-- TAB 3: TRADE -->
+        <div id="tab-trade" class="tab-content hidden p-3">
+            <h3 class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-2">⚡ Active Bot Positions</h3>
+            <div class="space-y-2">
+                <div class="bg-zinc-900 border border-zinc-800 p-3 rounded-lg flex justify-between items-center text-xs">
                     <div>
-                        <span class="font-bold text-sm block text-emerald-400">BUY BTCUSDT (1 Lot)</span>
-                        <span class="text-xs text-slate-400">Entry: $64,200 | Current: $64,250</span>
+                        <span class="font-bold text-emerald-400 block">BUY BTCUSDT (1 Lot)</span>
+                        <span class="text-[10px] text-zinc-500">Entry: $64,003.99</span>
                     </div>
                     <div class="text-right">
-                        <span class="font-bold text-sm text-emerald-400">+$50.00</span>
-                        <span class="text-[10px] block text-slate-500">Running</span>
+                        <span class="font-bold text-emerald-400 block">+$45.20</span>
+                        <span class="text-[9px] text-zinc-500">Running</span>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- History & Filter Section -->
-            <div class="flex justify-between items-center mb-2">
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">📜 Trade History & P&L</h3>
-                <select class="bg-slate-900 border border-slate-800 text-xs rounded p-1 text-slate-300">
+        <!-- TAB 4: HISTORY -->
+        <div id="tab-history" class="tab-content hidden p-3">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">📜 Trade History & P&L</h3>
+                <select class="bg-zinc-900 border border-zinc-800 text-[11px] rounded p-1 text-zinc-300 focus:outline-none">
                     <option>Today</option>
                     <option>Yesterday</option>
                     <option>Custom Calendar</option>
                 </select>
             </div>
-            
             <div class="space-y-2">
-                <div class="bg-slate-900/50 border border-slate-800/50 p-3 rounded-lg flex justify-between items-center text-xs">
+                <div class="bg-zinc-900/60 border border-zinc-800 p-3 rounded-lg flex justify-between items-center text-xs">
                     <div>
-                        <span class="font-bold block text-slate-200">ETHUSDT (Sell)</span>
-                        <span class="text-slate-500">2026-07-31 14:30</span>
+                        <span class="font-bold text-white block">ETHUSDT (Sell)</span>
+                        <span class="text-[10px] text-zinc-500">2026-07-31 15:10</span>
                     </div>
                     <div class="text-right">
-                        <span class="font-bold text-emerald-400">+$192.00</span>
-                        <span class="text-slate-500 block">Comm: -$1.20</span>
+                        <span class="font-bold text-emerald-400 block">+$180.00</span>
+                        <span class="text-[10px] text-zinc-500">Comm: -$1.50</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- TAB 4: AI ASSISTANT LEARNING -->
-        <div id="tab-ai" class="tab-content hidden">
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 h-[65vh] flex flex-col justify-between">
-                <div class="overflow-y-auto space-y-3 pr-1 text-xs">
-                    <div class="bg-slate-800/50 p-3 rounded-lg">
+        <!-- TAB 5: AI ASSISTANT -->
+        <div id="tab-ai" class="tab-content hidden p-3">
+            <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-3 h-[68vh] flex flex-col justify-between">
+                <div class="overflow-y-auto space-y-3 text-xs">
+                    <div class="bg-zinc-800/60 p-2.5 rounded-lg">
                         <span class="text-emerald-400 font-bold block mb-1">🤖 AI Bot Mentor:</span>
-                        <p class="text-slate-300">Hello! Maine aaj ki market movements aur candle patterns save kar liye hain. Aap mujhse pooch sakte hain ki kis jagah par badi wall aane par market ne kaisa move liya tha.</p>
+                        <p class="text-zinc-300">Main live market ki walls aur candle patterns save kar raha hoon. Aap mujhse kisi bhi setup ke baare mein pooch sakte hain!</p>
                     </div>
                 </div>
                 <div class="mt-3 flex gap-2">
-                    <input type="text" placeholder="Ask AI about candle patterns & setups..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
-                    <button class="bg-emerald-600 hover:bg-emerald-500 px-4 rounded-lg text-xs font-bold"><i class="fa-solid fa-paper-plane"></i></button>
+                    <input type="text" placeholder="Ask AI about setups & patterns..." class="w-full bg-black border border-zinc-800 rounded-lg p-2 text-xs text-zinc-200 focus:outline-none focus:border-emerald-500">
+                    <button class="bg-emerald-600 px-3 rounded-lg text-xs font-bold"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
             </div>
         </div>
 
-        <!-- TAB 5: SETTINGS & INTEGRATIONS -->
-        <div id="tab-settings" class="tab-content hidden">
-            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">⚙️ Bot & Account Settings</h3>
-            <div class="space-y-3 text-sm">
-                <div class="bg-slate-900 border border-slate-800 p-3 rounded-lg flex justify-between items-center">
-                    <span>Binance API Integration</span>
-                    <span class="text-xs bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded border border-emerald-500/20 font-bold">Connected</span>
+        <!-- TAB 6: ADMIN / SETTINGS -->
+        <div id="tab-admin" class="tab-content hidden p-3">
+            <h3 class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-3">⚙️ Bot & Integration Settings</h3>
+            <div class="space-y-2.5 text-xs">
+                <div class="bg-zinc-900 border border-zinc-800 p-3 rounded-lg flex justify-between items-center">
+                    <span>Binance WebSocket Feed</span>
+                    <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 font-bold">Active</span>
                 </div>
-                <div class="bg-slate-900 border border-slate-800 p-3 rounded-lg flex justify-between items-center">
-                    <span>MT5 Account Login</span>
-                    <button class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded font-bold">Configure</button>
-                </div>
-                <div class="bg-slate-900 border border-slate-800 p-3 rounded-lg flex justify-between items-center">
-                    <span>AI Execution Mode</span>
-                    <span class="text-xs text-emerald-400 font-bold">Semi-Auto</span>
+                <div class="bg-zinc-900 border border-zinc-800 p-3 rounded-lg flex justify-between items-center">
+                    <span>MT5 Account Status</span>
+                    <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 font-bold">Connected</span>
                 </div>
             </div>
         </div>
 
     </main>
 
-    <!-- BOTTOM NAVIGATION BAR -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 flex justify-around py-2 z-50">
-        <button onclick="switchTab('quotes')" id="nav-quotes" class="nav-btn flex flex-col items-center text-emerald-400 text-xs">
-            <i class="fa-solid fa-list-ul text-lg mb-0.5"></i>
+    <!-- BOTTOM NAVIGATION BAR (MT5 Style matching your screenshot) -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-black border-t border-zinc-800 flex justify-around py-2 z-50 text-[10px]">
+        <button onclick="switchTab('quotes')" id="nav-quotes" class="nav-btn flex flex-col items-center text-amber-500">
+            <i class="fa-solid fa-list-ul text-base mb-0.5"></i>
             Quotes
         </button>
-        <button onclick="switchTab('chart')" id="nav-chart" class="nav-btn flex flex-col items-center text-slate-400 text-xs">
-            <i class="fa-solid fa-chart-line text-lg mb-0.5"></i>
+        <button onclick="switchTab('chart')" id="nav-chart" class="nav-btn flex flex-col items-center text-zinc-400">
+            <i class="fa-solid fa-chart-line text-base mb-0.5"></i>
             Chart
         </button>
-        <button onclick="switchTab('trade')" id="nav-trade" class="nav-btn flex flex-col items-center text-slate-400 text-xs">
-            <i class="fa-solid fa-wallet text-lg mb-0.5"></i>
+        <button onclick="switchTab('trade')" id="nav-trade" class="nav-btn flex flex-col items-center text-zinc-400">
+            <i class="fa-solid fa-arrow-right-arrow-left text-base mb-0.5"></i>
             Trade
         </button>
-        <button onclick="switchTab('ai')" id="nav-ai" class="nav-btn flex flex-col items-center text-slate-400 text-xs">
-            <i class="fa-solid fa-brain text-lg mb-0.5"></i>
-            AI Bot
+        <button onclick="switchTab('history')" id="nav-history" class="nav-btn flex flex-col items-center text-zinc-400">
+            <i class="fa-solid fa-clock-rotate-left text-base mb-0.5"></i>
+            History
         </button>
-        <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn flex flex-col items-center text-slate-400 text-xs">
-            <i class="fa-solid fa-gear text-lg mb-0.5"></i>
-            Settings
+        <button onclick="switchTab('ai')" id="nav-ai" class="nav-btn flex flex-col items-center text-zinc-400">
+            <i class="fa-solid fa-robot text-base mb-0.5"></i>
+            AI
+        </button>
+        <button onclick="switchTab('admin')" id="nav-admin" class="nav-btn flex flex-col items-center text-zinc-400">
+            <i class="fa-solid fa-gear text-base mb-0.5"></i>
+            Admin
         </button>
     </nav>
 
-    <!-- Navigation Script -->
+    <!-- App Logic Script -->
     <script>
         function switchTab(tabName) {
-            // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            // Remove active color from all nav buttons
             document.querySelectorAll('.nav-btn').forEach(el => {
-                el.classList.remove('text-emerald-400');
-                el.classList.add('text-slate-400');
+                el.classList.remove('text-amber-500');
+                el.classList.add('text-zinc-400');
             });
 
-            // Show selected tab
             document.getElementById('tab-' + tabName).classList.remove('hidden');
-            // Highlight selected nav button
             const activeBtn = document.getElementById('nav-' + tabName);
-            activeBtn.classList.remove('text-slate-400');
-            activeBtn.classList.add('text-emerald-400');
+            activeBtn.classList.remove('text-zinc-400');
+            activeBtn.classList.add('text-amber-500');
+        }
+
+        function openChart(symbol) {
+            switchTab('chart');
+            document.getElementById('chart-symbol-tag').innerText = symbol + " • Perpetual";
         }
     </script>
 </body>
