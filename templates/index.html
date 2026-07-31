@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro AI Trading Terminal - MT5 Dark Theme</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #121212; color: #e0e0e0; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar / Navigation */
+        .sidebar { width: 260px; background-color: #1e1e1e; border-right: 1px solid #333; display: flex; flex-direction: column; }
+        .logo-area { padding: 20px; font-size: 18px; font-weight: bold; color: #00ff88; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 10px; }
+        .nav-menu { list-style: none; padding: 20px 0; }
+        .nav-menu li { padding: 12px 20px; cursor: pointer; color: #aaa; transition: 0.2s; }
+        .nav-menu li:hover, .nav-menu li.active { background-color: #2a2a2a; color: #fff; border-left: 4px solid #00ff88; }
+        
+        /* Main Content Area */
+        .main-content { flex: 1; display: flex; flex-direction: column; height: 100vh; }
+        .header { height: 60px; background-color: #1e1e1e; border-bottom: 1px solid #333; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+        .account-info { display: flex; gap: 20px; font-size: 14px; }
+        .account-info span { color: #00ff88; font-weight: bold; }
+        
+        /* Dashboard Grid */
+        .dashboard-grid { flex: 1; display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; gap: 15px; padding: 15px; overflow-y: auto; }
+        
+        .card { background-color: #1a1a1a; border: 1px solid #333; border-radius: 6px; padding: 15px; display: flex; flex-direction: column; }
+        .card-title { font-size: 14px; font-weight: bold; color: #888; margin-bottom: 10px; text-transform: uppercase; }
+        
+        /* Chart & Target Box */
+        .chart-card { grid-column: 1; grid-row: 1 / span 2; }
+        .target-box { background: linear-gradient(135deg, #1e2923, #151a17); border: 1px solid #2e7d32; }
+        .target-value { font-size: 28px; font-weight: bold; color: #00ff88; margin-top: 5px; }
+        
+        /* AI Chat Terminal */
+        .chat-card { grid-column: 2; grid-row: 1 / span 2; display: flex; flex-direction: column; }
+        .chat-messages { flex: 1; background-color: #141414; border: 1px solid #2a2a2a; border-radius: 4px; padding: 10px; overflow-y: auto; margin-bottom: 10px; font-size: 13px; display: flex; flex-direction: column; gap: 8px; }
+        .message { padding: 8px 12px; border-radius: 4px; max-width: 90%; line-height: 1.4; }
+        .message.ai { background-color: #222; color: #ddd; align-self: flex-start; border-left: 3px solid #00ff88; }
+        .message.user { background-color: #0d3b22; color: #fff; align-self: flex-end; }
+        
+        .chat-input-area { display: flex; gap: 8px; }
+        .chat-input-area input { flex: 1; background-color: #111; border: 1px solid #444; border-radius: 4px; padding: 10px; color: #fff; outline: none; }
+        .chat-input-area input:focus { border-color: #00ff88; }
+        .chat-input-area button { background-color: #00ff88; color: #111; border: none; padding: 0 15px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .chat-input-area button:hover { background-color: #00cc6a; }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo-area">
+            ⚡ MT5 AI Terminal
+        </div>
+        <ul class="nav-menu">
+            <li class="active">📊 Live Dashboard</li>
+            <li>🧠 AI Self-Learning & Memory</li>
+            <li>⚙️ Risk & Lot Management</li>
+            <li>📜 Trade Logs</li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <header class="header">
+            <div><b>Symbol:</b> BTCUSDT (100ms HFT Stream)</div>
+            <div class="account-info">
+                <div>Balance: <span id="acc-balance">$1,000.00</span></div>
+                <div>Daily Risk: <span style="color: #ff5252;">1.5% (30-Day Safe)</span></div>
+            </div>
+        </header>
+
+        <div class="dashboard-grid">
+            <!-- Chart & Order Book View -->
+            <div class="card chart-card">
+                <div class="card-title">Live Order Book & Wall Depth Analysis</div>
+                <div style="flex: 1; display: flex; align-items: center; justify-content: center; color: #666; border: 1px dashed #333; border-radius: 4px;">
+                    [ Binance Live WebSocket Stream & Chart Area ]
+                </div>
+            </div>
+
+            <!-- Expected Target & Signal Box -->
+            <div class="card target-box">
+                <div class="card-title">Expected Sureshot Target</div>
+                <div style="font-size: 13px; color: #aaa;">60:40 Volume Ratio Confirmed</div>
+                <div class="target-value" id="target-display">+$450.00 TP</div>
+                <div style="margin-top: 10px; font-size: 12px; color: #00ff88;">Status: Waiting for 95% AI Pattern Match</div>
+            </div>
+
+            <!-- AI Chat & Learning Terminal -->
+            <div class="card chat-card">
+                <div class="card-title">AI Brain & Approval Terminal</div>
+                <div class="chat-messages" id="chat-box">
+                    <div class="message ai"><b>[AI System]:</b> Connected successfully. I am monitoring order books and tracking pattern accuracies. Once a pattern hits 95% accuracy over 20+ tests, I will ask for your approval here.</div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="user-input" placeholder="Type rule, command or query to AI...">
+                    <button onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const chatBox = document.getElementById('chat-box');
+            
+            if(input.value.trim() === "") return;
+            
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.innerHTML = input.value;
+            chatBox.appendChild(userMsg);
+            
+            let query = input.value;
+            input.value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
+            
+            setTimeout(() => {
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'message ai';
+                aiMsg.innerHTML = `<b>[AI Brain]:</b> Analyzing your command: "${query}". Tracking order flow and checking 95% accuracy thresholds.`;
+                chatBox.appendChild(aiMsg);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 800);
+        }
+    </script>
+</body>
+</html>
