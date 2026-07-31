@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultra-Fast Order Book Monitor</title>
+    <!-- Tailwind CSS for lightweight, lightning-fast styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-mono p-4">
+
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <header class="flex justify-between items-center border-b border-slate-800 pb-4 mb-6">
+            <h1 class="text-xl font-bold text-emerald-400">⚡ Lightning Order Book (BTCUSDT)</h1>
+            <div id="status" class="text-xs bg-yellow-500/10 text-yellow-500 px-3 py-1 rounded-full border border-yellow-500/20">Connecting...</div>
+        </header>
+
+        <!-- Main Grid for Order Book -->
+        <div class="grid grid-cols-2 gap-4">
+            
+            <!-- Sellers Box (Asks) -->
+            <div class="bg-slate-900 border border-slate-800 rounded-lg p-4">
+                <h2 class="text-red-400 font-semibold mb-3 text-sm">🔴 Sellers (Asks)</h2>
+                <div id="asks-list" class="space-y-1 text-xs">
+                    <p class="text-slate-500">Loading fast stream...</p>
+                </div>
+            </div>
+
+            <!-- Buyers Box (Bids) -->
+            <div class="bg-slate-900 border border-slate-800 rounded-lg p-4">
+                <h2 class="text-emerald-400 font-semibold mb-3 text-sm">🟢 Buyers (Bids)</h2>
+                <div id="bids-list" class="space-y-1 text-xs">
+                    <p class="text-slate-500">Loading fast stream...</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Ultra-Fast WebSocket Script -->
+    <script>
+        const statusEl = document.getElementById('status');
+        const asksList = document.getElementById('asks-list');
+        const bidsList = document.getElementById('bids-list');
+
+        // Connecting directly to Binance WebSocket for real-time millisecond data
+        const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@depth5');
+
+        ws.onopen = function() {
+            statusEl.innerText = "Connected (Live)";
+            statusEl.className = "text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20";
+        };
+
+        ws.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+
+            // Render Asks (Sellers) - Reverse so highest price is on top
+            let asksHTML = '';
+            const asks = data.asks.slice(0, 5).reverse();
+            asks.forEach(ask => {
+                asksHTML += `<div class="flex justify-between py-1 border-b border-slate-800/50">
+                    <span class="text-red-400">$${parseFloat(ask[0]).toFixed(2)}</span>
+                    <span class="text-slate-300">${parseFloat(ask[1]).toFixed(4)}</span>
+                </div>`;
+            });
+            asksList.innerHTML = asksHTML;
+
+            // Render Bids (Buyers)
+            let bidsHTML = '';
+            const bids = data.bids.slice(0, 5);
+            bids.forEach(bid => {
+                bidsHTML += `<div class="flex justify-between py-1 border-b border-slate-800/50">
+                    <span class="text-emerald-400">$${parseFloat(bid[0]).toFixed(2)}</span>
+                    <span class="text-slate-300">${parseFloat(bid[1]).toFixed(4)}</span>
+                </div>`;
+            });
+            bidsList.innerHTML = bidsHTML;
+        };
+
+        ws.onerror = function(error) {
+            statusEl.innerText = "Error";
+            statusEl.className = "text-xs bg-red-500/10 text-red-400 px-3 py-1 rounded-full border border-red-500/20";
+        };
+    </script>
+</body>
+</html>
