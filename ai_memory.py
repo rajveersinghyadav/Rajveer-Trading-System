@@ -3,12 +3,12 @@ import os
 import datetime
 
 MEMORY_FILE = "ai_trading_rules.json"
-HISTORY_FILE = "ai_trade_learning_history.json"
+LEARNING_LOG_FILE = "ai_pattern_testing_log.json"
 
 class AIMemory:
     def __init__(self):
         self.rules = self.load_data(MEMORY_FILE)
-        self.history = self.load_data(HISTORY_FILE)
+        self.testing_logs = self.load_data(LEARNING_LOG_FILE)
 
     def load_data(self, filename):
         if os.path.exists(filename):
@@ -23,49 +23,51 @@ class AIMemory:
         with open(filename, "w") as f:
             json.dump(data, f, indent=4)
 
-    def remember_rule(self, condition, action, target_move):
-        """AI ko naye trading rules ya conditions sikhane ke liye"""
+    def test_and_track_pattern(self, pattern_name, outcome):
+        found = False
+        for log in self.testing_logs:
+            if log['pattern'] == pattern_name:
+                log['total_tests'] += 1
+                if outcome == "SUCCESS":
+                    log['success_count'] += 1
+                log['accuracy'] = round((log['success_count'] / log['total_tests']) * 100, 2)
+                found = True
+                break
+        
+        if not found:
+            self.testing_logs.append({
+                "pattern": pattern_name,
+                "total_tests": 1,
+                "success_count": 1 if outcome == "SUCCESS" else 0,
+                "accuracy": 100.0 if outcome == "SUCCESS" else 0.0
+            })
+        
+        self.save_data(LEARNING_LOG_FILE, self.testing_logs)
+
+    def check_for_approval_proposal(self, pattern_name):
+        for log in self.testing_logs:
+            if log['pattern'] == pattern_name:
+                if log['total_tests'] >= 20 and log['accuracy'] >= 95.0:
+                    risk_factor = round(100.0 - log['accuracy'], 2)
+                    return {
+                        "ready_for_approval": True,
+                        "pattern": pattern_name,
+                        "accuracy": log['accuracy'],
+                        "risk_factor": f"{risk_factor}% (Controlled Slippage / Market Noise)",
+                        "total_tested": log['total_tests'],
+                        "explanation": f"AI Self-Learning Report: Pattern '{pattern_name}' has been tested {log['total_tests']} times with {log['accuracy']}% success rate. Built-in risk factor is {risk_factor}%. Requesting human approval for direct live execution."
+                    }
+        return {"ready_for_approval": False}
+
+    def approve_and_save_rule(self, proposal):
         rule_entry = {
             "id": len(self.rules) + 1,
             "timestamp": str(datetime.datetime.now()),
-            "condition": condition,
-            "action": action,
-            "target_move": target_move
+            "approved_pattern": proposal['pattern'],
+            "accuracy": proposal['accuracy'],
+            "status": "ACTIVE_LIVE_TRADING"
         }
         self.rules.append(rule_entry)
         self.save_data(MEMORY_FILE, self.rules)
-        print(f"🧠 [AI MEMORY SAVED]: Rule #{rule_entry['id']} -> If {condition} THEN {action}")
+        print(f"🚀 [AI APPROVED & LIVE]: Pattern '{proposal['pattern']}' added to live execution engine.")
         return rule_entry
-
-    def record_trade_learning(self, pattern_name, result, profit_loss):
-        """Candle pattern ya wall reaction ke baad AI kya sikha, use record karna"""
-        learning_entry = {
-            "timestamp": str(datetime.datetime.now()),
-            "pattern": pattern_name,
-            "result": result,  # "SUCCESS" ya "FAILURE"
-            "pnl": profit_loss
-        }
-        self.history.append(learning_entry)
-        self.save_data(HISTORY_FILE, self.history)
-        print(f"📊 [AI LEARNING UPDATED]: Pattern '{pattern_name}' resulted in {result} (${profit_loss})")
-
-    def get_matched_rule(self, current_market_condition):
-        """Current market condition ke hisab se memory se rule match karna"""
-        for rule in self.rules:
-            if rule['condition'].lower() in current_market_condition.lower():
-                return rule
-        return None
-
-    def get_all_memories(self):
-        return {
-            "total_rules": len(self.rules),
-            "rules": self.rules,
-            "learning_history": self.history
-        }
-
-# Testing the Memory Engine
-if __name__ == "__main__":
-    ai_mem = AIMemory()
-    # Test adding a rule
-    ai_mem.remember_rule("RSI drops below 30 and Big Bid Wall > 10 BTC", "Execute BUY / LONG", "+20 Points")
-    ai_mem.record_trade_learning("Bullish Hammer at Support", "SUCCESS", +150.00)
