@@ -42,3 +42,15 @@ if __name__ == "__main__":
     
     # Run Flask Web Server
     app.run(host="0.0.0.0", port=5000, debug=True)
+    # --- AUTO TRADING CONTROLS ---
+from bot_engine import auto_bot
+
+@app.route('/api/start_bot', methods=['POST'])
+def start_bot():
+    auto_bot.start()
+    return jsonify({"status": "Started", "message": "Bot live trading is ACTIVE"})
+
+@app.route('/api/stop_bot', methods=['POST'])
+def stop_bot():
+    auto_bot.stop()
+    return jsonify({"status": "Stopped", "message": "Bot live trading is PAUSED"})
