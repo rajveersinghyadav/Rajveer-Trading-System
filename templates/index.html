@@ -86,17 +86,17 @@
             <!-- Chart & Order Book View -->
             <div class="card chart-card">
                 <div class="card-title">Live Order Book & Wall Depth</div>
-                <div style="flex: 1; display: flex; align-items: center; justify-content: center; color: #666; border: 1px dashed #333; border-radius: 4px; font-size: 12px; text-align: center; padding: 10px;">
-                    [ Binance Live WebSocket Stream & Chart Area ]
+                <div id="live-orderbook-info" style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #00ff88; border: 1px dashed #333; border-radius: 4px; font-size: 13px; text-align: center; padding: 10px; gap: 5px;">
+                    <span>Connecting to Binance WebSocket Stream...</span>
                 </div>
             </div>
 
             <!-- Expected Target & Signal Box -->
             <div class="card target-box">
                 <div class="card-title">Expected Sureshot Target</div>
-                <div style="font-size: 12px; color: #aaa;">60:40 Volume Ratio Confirmed</div>
-                <div class="target-value" id="target-display">+$450.00 TP</div>
-                <div style="margin-top: 5px; font-size: 11px; color: #00ff88;">Status: Waiting for 95% AI Match</div>
+                <div id="ratio-display" style="font-size: 12px; color: #aaa;">60:40 Volume Ratio Loading...</div>
+                <div class="target-value" id="target-display">ACTION: --</div>
+                <div id="status-display" style="margin-top: 5px; font-size: 11px; color: #00ff88;">Status: Initializing Live Engine</div>
             </div>
 
             <!-- AI Chat & Learning Terminal -->
@@ -106,7 +106,7 @@
                     <div class="message ai"><b>[AI System]:</b> Connected successfully. Monitoring order books and patterns. Will ask approval at 95% accuracy.</div>
                 </div>
                 <div class="chat-input-area">
-                    <input type="text" id="user-input" placeholder="Type command to AI...">
+                    <input type="text" id="user-input" placeholder="Type command to AI..." onkeypress="handleKeyPress(event)">
                     <button onclick="sendMessage()">Send</button>
                 </div>
             </div>
@@ -114,6 +114,39 @@
     </div>
 
     <script>
+        // Live Data Fetcher from Flask Backend (/api/status)
+        function fetchLiveStatus() {
+            fetch('/api/status')
+                .then(response => response.json())
+                .then(data => {
+                    // Update Order Book Display
+                    const obDiv = document.getElementById('live-orderbook-info');
+                    obDiv.innerHTML = `
+                        <b>Current Action:</b> <span style="color: #00ff88;">${data.action || 'HOLD'}</span><br>
+                        <b>Bid Ratio:</b> ${data.bid_ratio}% | <b>Ask Ratio:</b> ${data.ask_ratio}%<br>
+                        <b>Stop Loss:</b> $${data.stop_loss || 0.00}
+                    `;
+
+                    // Update Target Box
+                    document.getElementById('ratio-display').innerText = `Bids: ${data.bid_ratio}% vs Asks: ${data.ask_ratio}%`;
+                    document.getElementById('target-display').innerText = `ACTION: ${data.action || 'WAITING'}`;
+                    
+                    if(data.ai_status && data.ai_status.ready_for_approval) {
+                        document.getElementById('status-display').innerText = `Status: AI Approval Required!`;
+                        document.getElementById('status-display').style.color = '#ff5252';
+                    } else {
+                        document.getElementById('status-display').innerText = `Status: Monitoring Live Market`;
+                        document.getElementById('status-display').style.color = '#00ff88';
+                    }
+                })
+                .catch(err => console.error('Error fetching live status:', err));
+        }
+
+        // Har 1 second mein dashboard auto-refresh hoga
+        setInterval(fetchLiveStatus, 1000);
+        window.onload = fetchLiveStatus;
+
+        // Chat & AI Command Function
         function sendMessage() {
             const input = document.getElementById('user-input');
             const chatBox = document.getElementById('chat-box');
@@ -122,20 +155,39 @@
             
             const userMsg = document.createElement('div');
             userMsg.className = 'message user';
-            userMsg.innerHTML = input.value;
+            userMsg.innerText = input.value;
             chatBox.appendChild(userMsg);
             
             let query = input.value;
             input.value = "";
             chatBox.scrollTop = chatBox.scrollHeight;
             
-            setTimeout(() => {
+            // Backend AI API call (/api/chat)
+            fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: query })
+            })
+            .then(response => response.json())
+            .then(res => {
                 const aiMsg = document.createElement('div');
                 aiMsg.className = 'message ai';
-                aiMsg.innerHTML = `<b>[AI Brain]:</b> Analyzing: "${query}". Checking 95% accuracy thresholds.`;
+                aiMsg.innerHTML = `<b>[AI Brain]:</b> ${res.response}`;
                 chatBox.appendChild(aiMsg);
                 chatBox.scrollTop = chatBox.scrollHeight;
-            }, 800);
+            })
+            .catch(err => {
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'message ai';
+                errorMsg.innerHTML = `<b>[AI System Error]:</b> Could not reach AI brain.`;
+                chatBox.appendChild(errorMsg);
+            });
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
         }
     </script>
 </body>
