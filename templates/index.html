@@ -3,155 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro AI Trading Terminal - MT5 Dark Theme</title>
+    <title>MT5 AI Trading Terminal - Dark Theme</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #121212; color: #e0e0e0; display: flex; height: 100vh; overflow: hidden; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #121212; color: #e0e0e0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
-        /* Sidebar / Navigation */
-        .sidebar { width: 240px; background-color: #1e1e1e; border-right: 1px solid #333; display: flex; flex-direction: column; flex-shrink: 0; }
-        .logo-area { padding: 15px; font-size: 16px; font-weight: bold; color: #00ff88; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 10px; }
-        .nav-menu { list-style: none; padding: 10px 0; }
-        .nav-menu li { padding: 10px 15px; cursor: pointer; color: #aaa; transition: 0.2s; font-size: 13px; }
-        .nav-menu li:hover, .nav-menu li.active { background-color: #2a2a2a; color: #fff; border-left: 4px solid #00ff88; }
-        
-        /* Main Content Area */
-        .main-content { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        .header { height: 50px; background-color: #1e1e1e; border-bottom: 1px solid #333; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; font-size: 12px; flex-shrink: 0; }
-        .account-info { display: flex; gap: 15px; }
-        .account-info span { color: #00ff88; font-weight: bold; }
-        
-        /* Dashboard Grid */
-        .dashboard-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr; gap: 10px; padding: 10px; overflow-y: auto; }
-        
-        .card { background-color: #1a1a1a; border: 1px solid #333; border-radius: 6px; padding: 12px; display: flex; flex-direction: column; min-height: 150px; }
-        .card-title { font-size: 12px; font-weight: bold; color: #888; margin-bottom: 8px; text-transform: uppercase; }
-        
-        /* Chart & Target Box */
-        .chart-card { grid-column: 1 / span 2; min-height: 181px; }
-        .target-box { background: linear-gradient(135deg, #1e2923, #151a17); border: 1px solid #2e7d32; }
-        .target-value { font-size: 22px; font-weight: bold; color: #00ff88; margin-top: 5px; }
-        
-        /* AI Chat Terminal */
-        .chat-card { grid-column: 1 / span 2; display: flex; flex-direction: column; height: 280px; }
-        .chat-messages { flex: 1; background-color: #141414; border: 1px solid #2a2a2a; border-radius: 4px; padding: 8px; overflow-y: auto; margin-bottom: 8px; font-size: 12px; display: flex; flex-direction: column; gap: 6px; }
-        .message { padding: 6px 10px; border-radius: 4px; max-width: 95%; line-height: 1.3; }
-        .message.ai { background-color: #222; color: #ddd; align-self: flex-start; border-left: 3px solid #00ff88; }
-        .message.user { background-color: #0d3b22; color: #fff; align-self: flex-end; }
-        
-        .chat-input-area { display: flex; gap: 6px; }
-        .chat-input-area input { flex: 1; background-color: #111; border: 1px solid #444; border-radius: 4px; padding: 8px; color: #fff; outline: none; font-size: 12px; }
-        .chat-input-area input:focus { border-color: #00ff88; }
-        .chat-input-area button { background-color: #00ff88; color: #111; border: none; padding: 0 12px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 12px; }
+        /* Top Bar */
+        .top-bar { height: 45px; background-color: #1a1a1a; border-bottom: 1px solid #2a2a2a; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; font-size: 12px; flex-shrink: 0; }
+        .top-bar-left { display: flex; align-items: center; gap: 8px; font-weight: bold; }
+        .demo-badge { background-color: #ff9800; color: #121212; font-size: 10px; padding: 2px 6px; border-radius: 3px; font-weight: bold; }
+        .top-bar-right { display: flex; gap: 12px; }
+        .top-bar-right div span { color: #00ff88; font-weight: bold; }
 
-        /* Mobile Responsive Query */
-        @media (max-width: 768px) {
-            body { flex-direction: column; overflow-y: auto; height: auto; }
-            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #333; }
-            .nav-menu { display: flex; overflow-x: auto; padding: 5px 0; }
-            .nav-menu li { white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; }
-            .nav-menu li:hover, .nav-menu li.active { border-left: none; border-bottom: 3px solid #00ff88; }
-            .main-content { height: auto; overflow: visible; }
-            .dashboard-grid { display: flex; flex-direction: column; overflow: visible; }
-            .chat-card { height: 320px; }
-        }
+        /* Content Area for Tabs */
+        .content-container { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+        .tab-content { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; background-color: #121212; overflow-y: auto; padding: 12px; }
+        .tab-content.active { display: flex; }
+
+        /* Bottom Navigation Bar (MT5 Style) */
+        .bottom-nav { height: 55px; background-color: #181818; border-top: 1px solid #2a2a2a; display: flex; justify-content: space-around; align-items: center; flex-shrink: 0; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #888; text-decoration: none; font-size: 10px; cursor: pointer; flex: 1; height: 100%; transition: 0.2s; }
+        .nav-item span.icon { font-size: 18px; margin-bottom: 2px; }
+        .nav-item.active, .nav-item:hover { color: #ffb703; }
+
+        /* Shared Card / UI Elements */
+        .card { background-color: #1a1a1a; border: 1px solid #2e2e2e; border-radius: 6px; padding: 12px; margin-bottom: 10px; }
+        .card-title { font-size: 11px; font-weight: bold; color: #888; margin-bottom: 6px; text-transform: uppercase; }
+        
+        /* Trade Tab Styles */
+        .price-box-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        .price-card { background: #161616; border: 1px solid #2a2a2a; border-radius: 6px; padding: 10px; text-align: center; }
+        .price-val-sell { font-size: 16px; font-weight: bold; color: #ff5252; margin-top: 4px; }
+        .price-val-buy { font-size: 16px; font-weight: bold; color: #00ff88; margin-top: 4px; }
+        
+        .action-buttons { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-buy { flex: 1; background-color: #00ff88; color: #121212; border: none; padding: 12px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; }
+        .btn-sell { flex: 1; background-color: #ff5252; color: #fff; border: none; padding: 12px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; }
+
+        /* AI Chat Terminal Styles inside AI Tab */
+        .chat-container { display: flex; flex-direction: column; height: 100%; flex: 1; }
+        .chat-messages { flex: 1; background-color: #151515; border: 1px solid #252525; border-radius: 6px; padding: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+        .message { padding: 8px 10px; border-radius: 6px; max-width: 90%; font-size: 12px; line-height: 1.4; }
+        .message.ai { background-color: #202020; color: #ddd; align-self: flex-start; border-left: 3px solid #00ff88; }
+        .message.user { background-color: #0d3b22; color: #fff; align-self: flex-end; }
+        .chat-input-area { display: flex; gap: 8px; }
+        .chat-input-area input { flex: 1; background-color: #181818; border: 1px solid #333; border-radius: 6px; padding: 10px; color: #fff; outline: none; font-size: 12px; }
+        .chat-input-area input:focus { border-color: #ffb703; }
+        .chat-input-area button { background-color: #ffb703; color: #121212; border: none; padding: 0 15px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+
+        /* Quotes Table */
+        .quote-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #222; font-size: 13px; }
+        .quote-symbol { font-weight: bold; color: #fff; }
+        .quote-prices { text-align: right; }
     </style>
 </head>
 <body>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="logo-area">
-            ⚡ MT5 AI Terminal
+    <!-- Top Status Bar -->
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <span class="demo-badge">DEMO</span>
+            <span>MT5</span>
         </div>
-        <ul class="nav-menu">
-            <li class="active">📊 Dashboard</li>
-            <li>🧠 AI Memory</li>
-            <li>⚙️ Risk Management</li>
-            <li>📜 Logs</li>
-        </ul>
+        <div class="top-bar-right">
+            <div>BAL: <span id="acc-balance">10,000.00</span></div>
+            <div>EQ: <span id="acc-equity">10,000.00</span></div>
+            <div>P/L: <span id="acc-pl" style="color:#00ff88;">0.00</span></div>
+        </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <header class="header">
-            <div><b>BTCUSDT</b> (HFT)</div>
-            <div class="account-info">
-                <div>Bal: <span id="acc-balance">$1,000</span></div>
-                <div>Risk: <span style="color: #ff5252;">1.5%</span></div>
-            </div>
-        </header>
-
-        <div class="dashboard-grid">
-            <!-- Chart & Order Book View -->
-            <div class="card chart-card">
-                <div class="card-title">Live Order Book & Wall Depth</div>
-                <div id="live-orderbook-info" style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #00ff88; border: 1px dashed #333; border-radius: 4px; font-size: 13px; text-align: center; padding: 10px; gap: 5px;">
-                    <span>Connecting to Binance WebSocket Stream...</span>
+    <!-- Main Dynamic Content Container -->
+    <div class="content-container">
+        
+        <!-- 1. QUOTES TAB -->
+        <div id="tab-quotes" class="tab-content">
+            <div class="card">
+                <div class="card-title">Market Watch - Live Stream</div>
+                <div class="quote-row">
+                    <div>
+                        <div class="quote-symbol">BTCUSDT</div>
+                        <div style="font-size:10px; color:#888;" id="btc-hl">H: 65,409.56 L: 63,943.29</div>
+                    </div>
+                    <div class="quote-prices">
+                        <span id="q-bid" style="color:#00ff88; font-weight:bold;">64,003.99</span> &nbsp; 
+                        <span id="q-ask" style="color:#ff5252; font-weight:bold;">64,004.00</span>
+                    </div>
+                </div>
+                <div class="quote-row">
+                    <div><span class="quote-symbol">ETHUSDT</span></div>
+                    <div style="color:#00ff88;">1,887.08</div>
+                </div>
+                <div class="quote-row">
+                    <div><span class="quote-symbol">BNBUSDT</span></div>
+                    <div style="color:#ff5252;">591.15</div>
                 </div>
             </div>
+        </div>
 
-            <!-- Expected Target & Signal Box -->
-            <div class="card target-box">
-                <div class="card-title">Expected Sureshot Target</div>
-                <div id="ratio-display" style="font-size: 12px; color: #aaa;">60:40 Volume Ratio Loading...</div>
-                <div class="target-value" id="target-display">ACTION: --</div>
-                <div id="status-display" style="margin-top: 5px; font-size: 11px; color: #00ff88;">Status: Initializing Live Engine</div>
+        <!-- 2. CHART TAB -->
+        <div id="tab-chart" class="tab-content">
+            <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+                <div><b>BTCUSDT</b> (100ms HFT)</div>
+                <div id="chart-price-header" style="font-size:16px; font-weight:bold; color:#00ff88;">64,004.00</div>
             </div>
+            <div class="card" style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; border: 1px dashed #333;">
+                <span style="color: #00ff88; font-size: 13px;">[ Binance Live WebSocket Stream Active ]</span>
+                <span id="chart-status-sub" style="color: #888; font-size: 11px; margin-top: 5px;">Ratio 60:40 | Action: HOLD</span>
+            </div>
+        </div>
 
-            <!-- AI Chat & Learning Terminal -->
-            <div class="card chat-card">
-                <div class="card-title">AI Brain & Approval Terminal</div>
+        <!-- 3. TRADE / DASHBOARD TAB (Primary Engine View) -->
+        <div id="tab-trade" class="tab-content active">
+            <div class="card">
+                <div class="card-title">New Order - BTCUSDT</div>
+                
+                <div class="price-box-grid">
+                    <div class="price-card">
+                        <div style="font-size:10px; color:#888;">BID (SELL)</div>
+                        <div class="price-val-sell" id="trade-bid">64,005.48</div>
+                    </div>
+                    <div class="price-card">
+                        <div style="font-size:10px; color:#888;">ASK (BUY)</div>
+                        <div class="price-val-buy" id="trade-ask">64,005.49</div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 8px; font-size: 11px; color: #888;">Live Engine Action & Depth</div>
+                <div id="live-orderbook-info" style="background:#141414; padding:10px; border-radius:4px; font-size:12px; border:1px solid #333; line-height: 1.5;">
+                    Connecting to Binance WebSocket...
+                </div>
+
+                <div style="margin-top: 10px; background: linear-gradient(135deg, #1e2923, #151a17); padding: 10px; border-radius: 6px; border: 1px solid #2e7d32;">
+                    <div style="font-size:11px; color:#aaa;" id="ratio-display">Volume Ratio Loading...</div>
+                    <div id="target-display" style="font-size: 18px; font-weight: bold; color: #00ff88; margin-top: 4px;">ACTION: --</div>
+                    <div id="status-display" style="font-size: 11px; color: #00ff88; margin-top: 3px;">Status: Initializing Live Engine</div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-buy" onclick="triggerManualAction('BUY')">BUY / LONG</button>
+                    <button class="btn-sell" onclick="triggerManualAction('SELL')">SELL / SHORT</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. HISTORY TAB -->
+        <div id="tab-history" class="tab-content">
+            <div class="card">
+                <div class="card-title">Positions & History</div>
+                <div style="text-align: center; color: #666; padding: 40px 0; font-size: 12px;">No active open positions.</div>
+            </div>
+        </div>
+
+        <!-- 5. AI BRAIN TAB -->
+        <div id="tab-ai" class="tab-content">
+            <div class="card chat-container">
+                <div class="card-title">TradeMind AI Brain & Terminal</div>
                 <div class="chat-messages" id="chat-box">
-                    <div class="message ai"><b>[AI System]:</b> Connected successfully. Monitoring order books and patterns. Will ask approval at 95% accuracy.</div>
+                    <div class="message ai"><b>[AI System]:</b> Connected successfully to backend engine. Monitoring order books and patterns.</div>
                 </div>
                 <div class="chat-input-area">
-                    <input type="text" id="user-input" placeholder="Type command to AI..." onkeypress="handleKeyPress(event)">
+                    <input type="text" id="user-input" placeholder="Ask TradeMind or teach a rule..." onkeypress="handleKeyPress(event)">
                     <button onclick="sendMessage()">Send</button>
                 </div>
             </div>
         </div>
+
+        <!-- 6. ADMIN TAB -->
+        <div id="tab-admin" class="tab-content">
+            <div class="card">
+                <div class="card-title">Admin Console</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; background: #151515; padding: 10px; border-radius: 4px; border: 1px solid #2a2a2a;">
+                    <div>
+                        <div style="font-weight: bold; font-size: 12px;">Algo Engine</div>
+                        <div style="font-size: 10px; color: #00ff88;" id="engine-status-text">Running Live</div>
+                    </div>
+                    <button style="background: #00ff88; color: #121212; border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; font-size: 11px; cursor: pointer;" onclick="toggleEngine()">SYNC</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <a class="nav-item" onclick="switchTab('quotes', this)"><span class="icon">📊</span>Quotes</a>
+        <a class="nav-item" onclick="switchTab('chart', this)"><span class="icon">📈</span>Chart</a>
+        <a class="nav-item active" onclick="switchTab('trade', this)"><span class="icon">⚡</span>Trade</a>
+        <a class="nav-item" onclick="switchTab('history', this)"><span class="icon">⏳</span>History</a>
+        <a class="nav-item" onclick="switchTab('ai', this)"><span class="icon">🤖</span>AI</a>
+        <a class="nav-item" onclick="switchTab('admin', this)"><span class="icon">⚙️</span>Admin</a>
     </div>
 
     <script>
-        // Live Data Fetcher from Flask Backend (/api/status)
+        // Tab Navigation Logic
+        function switchTab(tabName, element) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            
+            document.getElementById('tab-' + tabName).classList.add('active');
+            if(element) element.classList.add('active');
+        }
+
+        // Live Backend Status Sync (/api/status) - Zero Connectivity Loss
         function fetchLiveStatus() {
             fetch('/api/status')
                 .then(response => response.json())
                 .then(data => {
-                    // Update Order Book Display
-                    const obDiv = document.getElementById('live-orderbook-info');
-                    obDiv.innerHTML = `
-                        <b>Current Action:</b> <span style="color: #00ff88;">${data.action || 'HOLD'}</span><br>
-                        <b>Bid Ratio:</b> ${data.bid_ratio}% | <b>Ask Ratio:</b> ${data.ask_ratio}%<br>
-                        <b>Stop Loss:</b> $${data.stop_loss || 0.00}
-                    `;
+                    const actionVal = data.action || 'HOLD';
+                    const bidRatio = data.bid_ratio || 50;
+                    const askRatio = data.ask_ratio || 50;
+                    const stopLoss = data.stop_loss || 0.00;
 
-                    // Update Target Box
-                    document.getElementById('ratio-display').innerText = `Bids: ${data.bid_ratio}% vs Asks: ${data.ask_ratio}%`;
-                    document.getElementById('target-display').innerText = `ACTION: ${data.action || 'WAITING'}`;
-                    
-                    if(data.ai_status && data.ai_status.ready_for_approval) {
-                        document.getElementById('status-display').innerText = `Status: AI Approval Required!`;
-                        document.getElementById('status-display').style.color = '#ff5252';
-                    } else {
-                        document.getElementById('status-display').innerText = `Status: Monitoring Live Market`;
-                        document.getElementById('status-display').style.color = '#00ff88';
+                    // Update Trade Panel Order Book Info
+                    const obDiv = document.getElementById('live-orderbook-info');
+                    if(obDiv) {
+                        obDiv.innerHTML = `
+                            <b>Current Action:</b> <span style="color: #00ff88;">${actionVal}</span><br>
+                            <b>Bid Ratio:</b> ${bidRatio}% | <b>Ask Ratio:</b> ${askRatio}%<br>
+                            <b>Stop Loss Target:</b> $${stopLoss}
+                        `;
+                    }
+
+                    // Update Ratio & Target Box
+                    const ratioDisp = document.getElementById('ratio-display');
+                    if(ratioDisp) ratioDisp.innerText = `${bidRatio}:${askRatio} Volume Ratio Confirmed`;
+
+                    const targetDisp = document.getElementById('target-display');
+                    if(targetDisp) targetDisp.innerText = `ACTION: ${actionVal}`;
+
+                    // Update Quotes & Chart live ticker placeholders if provided
+                    const qBid = document.getElementById('q-bid');
+                    const qAsk = document.getElementById('q-ask');
+                    if(qBid && data.current_price) {
+                        qBid.innerText = data.current_price;
+                        qAsk.innerText = (parseFloat(data.current_price) + 0.01).toFixed(2);
+                    }
+
+                    const chartHeader = document.getElementById('chart-price-header');
+                    if(chartHeader && data.current_price) {
+                        chartHeader.innerText = data.current_price;
+                    }
+
+                    // AI Approval Status check
+                    const statusDisp = document.getElementById('status-display');
+                    if(statusDisp) {
+                        if(data.ai_status && data.ai_status.ready_for_approval) {
+                            statusDisp.innerText = `Status: AI Approval Required!`;
+                            statusDisp.style.color = '#ff5252';
+                        } else {
+                            statusDisp.innerText = `Status: Monitoring Live Market`;
+                            statusDisp.style.color = '#00ff88';
+                        }
                     }
                 })
-                .catch(err => console.error('Error fetching live status:', err));
+                .catch(err => console.error('Background sync warning:', err));
         }
 
-        // Har 1 second mein dashboard auto-refresh hoga
+        // Auto poll every 1 second
         setInterval(fetchLiveStatus, 1000);
         window.onload = fetchLiveStatus;
 
-        // Chat & AI Command Function
+        // AI Chat Terminal Communication (/api/chat)
         function sendMessage() {
             const input = document.getElementById('user-input');
             const chatBox = document.getElementById('chat-box');
             
-            if(input.value.trim() === "") return;
+            if(!input || input.value.trim() === "") return;
             
             const userMsg = document.createElement('div');
             userMsg.className = 'message user';
@@ -162,7 +279,6 @@
             input.value = "";
             chatBox.scrollTop = chatBox.scrollHeight;
             
-            // Backend AI API call (/api/chat)
             fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -172,14 +288,14 @@
             .then(res => {
                 const aiMsg = document.createElement('div');
                 aiMsg.className = 'message ai';
-                aiMsg.innerHTML = `<b>[AI Brain]:</b> ${res.response}`;
+                aiMsg.innerHTML = `<b>[TradeMind AI]:</b> ${res.response}`;
                 chatBox.appendChild(aiMsg);
                 chatBox.scrollTop = chatBox.scrollHeight;
             })
             .catch(err => {
                 const errorMsg = document.createElement('div');
                 errorMsg.className = 'message ai';
-                errorMsg.innerHTML = `<b>[AI System Error]:</b> Could not reach AI brain.`;
+                errorMsg.innerHTML = `<b>[System]:</b> Could not reach backend brain.`;
                 chatBox.appendChild(errorMsg);
             });
         }
@@ -188,6 +304,14 @@
             if (event.key === 'Enter') {
                 sendMessage();
             }
+        }
+
+        function triggerManualAction(actionType) {
+            alert(`Manual execution command sent: ${actionType}`);
+        }
+
+        function toggleEngine() {
+            alert('Engine sync toggled.');
         }
     </script>
 </body>
