@@ -15,6 +15,11 @@ class Config:
     SYMBOL = "BTCUSDT"
     QUANTITY = 0.001
     
+    # Dynamic Lot Size / Quantity Settings (MetaTrader style)
+    DEFAULT_LOT_SIZE = 0.01  # Apni zaroorat ke mutabiq default lot set karein
+    MIN_LOT_SIZE = 0.01
+    MAX_LOT_SIZE = 10.0
+    
     # Risk Limits
     MAX_DAILY_LOSS = 50.0
     STOP_LOSS_PCT = 0.01
@@ -26,4 +31,3 @@ class Config:
     REDIS_DB = 0
 
 config = Config()
-
